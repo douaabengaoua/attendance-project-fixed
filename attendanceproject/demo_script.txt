@@ -1,0 +1,11 @@
+Demo script (live):
+1. Start Apache & MySQL (or run PHP built-in on port 8000).
+2. Import sql/schema.sql into MySQL database 'attendance_db'.
+3. Edit backend/config.php with DB credentials.
+4. Open three browser tabs:
+   - Professor: /frontend/prof/session.html
+   - Student: /frontend/student/attendance.html
+   - Admin: /frontend/admin/dashboard.html
+5. Professor: enter Group ID 1 -> Load Students -> Save Attendance.
+6. Student: submit a justification for session id 1.
+7. Admin: inspect DB tables (attendance_records, justifications).

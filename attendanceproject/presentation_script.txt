@@ -1,0 +1,7 @@
+Presentation script (what to say to teacher):
+- Intro: project goal and users (student/professor/admin).
+- Show architecture: PHP backend, MySQL DB, jQuery frontend (mobile-first).
+- Live demo: create session, mark attendance, student submits justification, admin views records.
+- Show DB schema.sql and explain main tables.
+- GitHub & README: explain how to run locally.
+- Future work: authentication, Excel import with PhpSpreadsheet, charts (Chart.js), deploy to hosting.

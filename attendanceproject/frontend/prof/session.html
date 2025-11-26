@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Professor - Session</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+</head>
+<body>
+  <h2>Professor - Mark Attendance (Demo)</h2>
+  <label>Group ID: <input id="group_id" value="1"></label>
+  <button id="load">Load Students</button>
+  <table id="students-table" border="1" cellpadding="6" style="margin-top:10px;">
+    <thead><tr><th>#</th><th>Name</th><th>Matricule</th><th>Status</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <button id="save-attendance">Save Attendance</button>
+
+<script>
+$(function(){
+  var sessionId = null;
+
+  $('#load').click(function(){
+    var groupId = $('#group_id').val();
+    $.getJSON('/backend/get_students_for_group.php?group_id=' + encodeURIComponent(groupId), function(data){
+      var tbody = $('#students-table tbody').empty();
+      data.forEach(function(s,i){
+        var row = '<tr data-id="'+s.id+'"><td>'+(i+1)+'</td><td>'+s.fullname+'</td><td>'+s.matricule+'</td>'
+                + '<td><select class="status"><option value="present">Present</option><option value="absent">Absent</option><option value="late">Late</option></select></td></tr>';
+        tbody.append(row);
+      });
+      // create a session (demo uses prof_id=2)
+      $.post('/backend/create_session.php', { course_id:1, group_id: groupId, prof_id: 2 }, function(resp){
+        try { var j = JSON.parse(resp); sessionId = j.session_id; console.log('session', j); } catch(e){}
+      });
+    });
+  });
+
+  $('#save-attendance').click(function(){
+    if(!sessionId){ alert('Load students first'); return; }
+    var records = [];
+    $('#students-table tbody tr').each(function(){
+      records.push({
+        user_id: $(this).data('id'),
+        status: $(this).find('.status').val()
+      });
+    });
+    $.post('/backend/take_attendance.php', { session_id: sessionId, records: JSON.stringify(records) }, function(resp){
+      try { var j = JSON.parse(resp); if(j.success) alert('Saved'); else alert('Error: '+(j.error||'unknown')); } catch(e){ alert('Saved (no response)'); }
+    });
+  });
+});
+</script>
+</body>
+</html>
